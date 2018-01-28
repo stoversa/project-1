@@ -1,5 +1,5 @@
+/********** Firebase initialization: If forking, add your credentials to config const in config.js    ***********/
 firebase.initializeApp(config);
-
 var userStorage = firebase.database().ref("user-storage")
 
 
@@ -57,7 +57,7 @@ ui.start('#firebaseui-auth-container', {
         initApp()
 });
 */
-//Place for our API calls
+/***** object for our API calls *******/
 var api = {
     callNameAPI: function () {
         $.ajax({
@@ -75,7 +75,7 @@ var api = {
         });
     },
     callHistory: function () {
-
+        //this API requires CORS in order to function properly. This method might be deprecated/not supported in future versions of certain Web browsers.
         var queryUrl = "https://cors-anywhere.herokuapp.com/" + "http://history.muffinlabs.com/date/" + app.userDobMonth + "/" + app.userDobDay
         // $.ajaxPrefilter(function (options) {
         //     if (options.crossDomain && jQuery.support.cors) {
@@ -89,36 +89,39 @@ var api = {
             var returnInfo = JSON.parse(response);
             var x = Math.floor(Math.random() * returnInfo.data.Events.length); //randomizes the response we add to the page (next 2 lines)
             app.text = returnInfo.data.Events[x].text;
-            app.yearOccur = returnInfo.data.Events[x].year;
+            app.yearOccur = returnInfo.data.Events[x].year; //some responses arrive with a term proceded by a colon and text. This removes the colon and preceding term
             if (app.text.indexOf(":") > -1) {
                 app.text = app.text.split(":");
                 app.text = app.text[1];
             }
             //Typing animation
-            if (app.typeWriterTimeout != ""){
-                clearTimeout(app.typeWriterTimeout);
+            if (app.typeAnimationTimeout != ""){
+                clearTimeout(app.typeAnimationTimeout);
                 $("#results-container").empty();
             };
-            app.letterCount = 0;
+            app.letterCount = 0; //resets the letter count for our "loop" when we run typeAnimation
             app.fullMessage = ("Hi " + app.userName + ", In the year " + app.yearOccur + " on the day you were born, " + app.text)
             app.typeAnimation();
         })
     }
-}
-//app object stores application functions and variables
-var app = {
+}; //end API object
+/***** app object stores application functions and variables *******/
+var app = { 
+
+    //variables
     userName: "",
-    userDob: "",
-    userDobDay: "",
-    userDobMonth: "",
-    userDobYear: "",
-    text: "",
-    textTwo: "",
-    textTwoAdded: false,
-    fullMessage: "",
-    typeWriterTimeout: "",
-    letterCount: 0,
-    //animates page with answer
+    userDob: "", //user's full date of birth, taken from UI
+    userDobDay: "", //parsed day from Dob
+    userDobMonth: "", //parsed month from Dob
+    userDobYear: "", //parsed year from Dob
+    text: "", //text from initial API call
+    textTwo: "", //text from second API call
+    textTwoAdded: false, //indicates that the text from second API call was added to the results container
+    fullMessage: "", //this variable is currently just used in typeAnimation(); takes the text from an API call with some additioanl explanation and prints it to the UI
+    typeAnimationTimeout: "", //timeout for our typeAnimationTimeoutFunction
+    letterCount: 0, //this value allows us to increment the typeAnimation function
+    
+    //animates page with info from first API, then checks for additional APIs
     typeAnimation: function () {
         if (app.letterCount === app.fullMessage.length) {
             console.log("I'm done!")
@@ -131,22 +134,23 @@ var app = {
             var information = $("#results-container").text();
             $("#results-container").text(information + character);
             app.letterCount++;
-            app.typeWriterTimeoutFunction();
+            app.typeAnimationTimeoutFunction();
         }
     },
-    typeWriterTimeoutFunction: function () {
+    typeAnimationTimeoutFunction: function () {
         var speed = 50;
-        app.typeWriterTimeout = setTimeout(app.typeAnimation, speed);
+        app.typeAnimationTimeout = setTimeout(app.typeAnimation, speed);
     },
     addSecondText: function (){
         app.letterCount = 0;
-        clearTimeout(app.typeWriterTimeout);
+        clearTimeout(app.typeAnimationTimeout);
         app.fullMessage = "Your name means " + app.textTwo + ".";
         app.textTwoAdded = true; //prevents an endless loop from the logic above in typeAnimation()
         app.typeAnimation(); //appends to date in history
     }
-};
+}; //end app object
 
+/************* Event listeners    *************/
   userStorage.on("child_added",function(snapshot){
         var p = $("<p>");
         p.text(snapshot.val().name + " " + snapshot.val().dobMonth + "/" + snapshot.val().dobDay + "/" + snapshot.val().dobYear);
@@ -160,7 +164,7 @@ var app = {
         console.log("Unable to retreive data");
     }
 )
-
+// on-click event function for when a user clcks on a pre-existing serach's button
 $(document).delegate(".user-button","click",function(){
     $("#results-container").empty();
     app.userName = $(this).attr("name");
@@ -170,6 +174,7 @@ $(document).delegate(".user-button","click",function(){
     api.callNameAPI();
 })
 
+// function when a user adds the 
 document.onkeydown = function(event){
     if(event.which === 13){
         $("#results-container").empty();
@@ -188,6 +193,5 @@ document.onkeydown = function(event){
         
         api.callHistory();
         api.callNameAPI();
-
     }
 }
