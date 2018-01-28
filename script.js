@@ -165,6 +165,29 @@ var app = {
         $("#button-container").append(div);
     },
 
+    //the following two functions deal with either inputting data to view content on the page, or viewing content for pre-existing users
+    addNewName: function (event) {
+        if (event.which === 13) {
+            $("#results-container").empty();
+            app.userName = $("#name-input").val().trim();
+            app.userDob = $("#date").val();
+            app.userDobDay = app.userDob.substring(app.userDob.length - 2);
+            app.userDobMonth = app.userDob.substring(5, 7);
+            app.userDobYear = app.userDob.substring(0, 4);
+
+            userStorage.push({
+                name: app.userName,
+                dobDay: app.userDobDay,
+                dobMonth: app.userDobMonth,
+                dobYear: app.userDobYear
+            })
+
+            api.callHistory();
+            api.callNameAPI();
+        }
+    },
+
+    //if a user clicks on a pre-existing name/dob button, return info
     clickButton: function (that) {
         $("#results-container").empty();
         app.userName = $(that).attr("name");
@@ -197,24 +220,5 @@ $(document).delegate(".remove", "click", function () {
     thisButton.remove();//removes containing button from DOM
 });
 
-// function when a user adds the 
-document.onkeydown = function(event){
-    if(event.which === 13){
-        $("#results-container").empty();
-        app.userName = $("#name-input").val().trim();
-        app.userDob = $("#date").val();
-        app.userDobDay = app.userDob.substring(app.userDob.length - 2);
-        app.userDobMonth = app.userDob.substring(5, 7);
-        app.userDobYear = app.userDob.substring(0, 4);
-
-        userStorage.push({
-            name: app.userName,
-            dobDay: app.userDobDay,
-            dobMonth: app.userDobMonth,
-            dobYear: app.userDobYear
-        })
-        
-        api.callHistory();
-        api.callNameAPI();
-    }
-}
+// function when a user inputs name/dob 
+document.onkeydown = addNewName(event); //adds new name/dob button and returns info about this input
