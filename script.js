@@ -144,7 +144,7 @@ var app = {
     addSecondText: function (){
         app.letterCount = 0;
         clearTimeout(app.typeAnimationTimeout);
-        app.fullMessage = " Your name means, or is most associated with:  " + app.textTwo + ".";
+        app.fullMessage = " Your name is most commonly associated with:  " + app.textTwo + ".";
         app.textTwoAdded = true; //prevents an endless loop from the logic above in typeAnimation()
         app.typeAnimation(); //appends to date in history
     },
