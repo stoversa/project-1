@@ -124,7 +124,6 @@ var app = {
     //animates page with info from first API, then checks for additional APIs
     typeAnimation: function () {
         if (app.letterCount === app.fullMessage.length) {
-            console.log("I'm done!")
             if (app.textTwo != "" && app.textTwoAdded === false){ //if we have received a response from Words API
                 app.addSecondText(); //add its text to our results using this function
             };
