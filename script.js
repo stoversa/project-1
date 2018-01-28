@@ -144,35 +144,58 @@ var app = {
     addSecondText: function (){
         app.letterCount = 0;
         clearTimeout(app.typeAnimationTimeout);
-        app.fullMessage = "Your name means " + app.textTwo + ".";
+        app.fullMessage = " Your name means, or is most associated with:  " + app.textTwo + ".";
         app.textTwoAdded = true; //prevents an endless loop from the logic above in typeAnimation()
         app.typeAnimation(); //appends to date in history
+    },
+
+    //generates buttons onload
+    populateButtons: function (snapshot) {
+        var key = snapshot.key; //grabs the unique Firebase key associated with each name/dob entry
+        var p = $("<p>");
+        var span = $("<span>").text("X").addClass("remove");
+        var div = $("<div>");
+        span.attr("key", key);
+        p.text(snapshot.val().name + " " + snapshot.val().dobMonth + "/" + snapshot.val().dobDay + "/" + snapshot.val().dobYear);
+        p.attr("class", "user-button");
+        p.attr("name", snapshot.val().name);
+        p.attr("day", snapshot.val().dobDay);
+        p.attr("month", snapshot.val().dobMonth);
+        div.append(p, span);
+        $("#button-container").append(div);
+    },
+
+    clickButton: function (that) {
+        $("#results-container").empty();
+        app.userName = $(that).attr("name");
+        app.userDobDay = $(that).attr("day");
+        app.userDobMonth = $(that).attr("month");
+        api.callHistory();
+        api.callNameAPI();
     }
 }; //end app object
 
 /************* Event listeners    *************/
-  userStorage.on("child_added",function(snapshot){
-        var p = $("<p>");
-        p.text(snapshot.val().name + " " + snapshot.val().dobMonth + "/" + snapshot.val().dobDay + "/" + snapshot.val().dobYear);
-        p.attr("class", "user-button");
-        p.attr("name", snapshot.val().name);
-        p.attr("day",snapshot.val().dobDay);
-        p.attr("month",snapshot.val().dobMonth);
-        $("#button-container").append(p);
-    },
-    function(errData){
+userStorage.on("child_added", function(snapshot){
+    app.populateButtons(snapshot)}, //pushes firebase info to the populate buttons function
+    function (errData) {
         console.log("Unable to retreive data");
     }
 )
+
 // on-click event function for when a user clcks on a pre-existing serach's button
-$(document).delegate(".user-button","click",function(){
-    $("#results-container").empty();
-    app.userName = $(this).attr("name");
-    app.userDobDay = $(this).attr("day");
-    app.userDobMonth = $(this).attr("month");
-    api.callHistory();
-    api.callNameAPI();
-})
+$(document).delegate(".user-button", "click", function (){
+    var that = $(this);
+    app.clickButton (that);
+});
+
+//delete function
+$(document).delegate(".remove", "click", function () {
+    var thisButton = $(this).parent();//grabs the parent of the remove button, so that we can delete from DOM
+    var key = $(this).attr("key");//grabs key of the object we'll be deleting
+    firebase.database().ref("user-storage/" + key).remove();//deletes the object in Firebase
+    thisButton.remove();//removes containing button from DOM
+});
 
 // function when a user adds the 
 document.onkeydown = function(event){
