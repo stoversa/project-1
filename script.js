@@ -67,12 +67,14 @@ var api = {
             beforeSend: function (xhr) { xhr.setRequestHeader('X-Mashape-Key', 'KTvKMGaySOmsh75NGO7T8aR3MBbwp1rfNdIjsnwdXomPepANNE') }
         }).done(function (response) {
             var nameObj = response;
-            console.log(nameObj.results);
-            var definition = (nameObj.results[0]["definition"] || "");
-            app.textTwo = definition;
-            // var p = $("<p>")
-            // p.text("Your name means " + definition)
-            // $("#results-container").append(p)
+            app.textTwo = "";
+            if (nameObj.results){
+                var definition = nameObj.results[0]["definition"];
+                app.textTwo = definition;
+            }
+            else {
+                console.log("No definition from Name API");
+            }
         });
     },
     callHistory: function () {
@@ -101,7 +103,7 @@ var api = {
                 $("#results-container").empty();
             };
             app.letterCount = 0; //resets the letter count for our "loop" when we run typeAnimation
-            app.fullMessage = ("Hi " + app.userName + ", In the year " + app.yearOccur + " on the day you were born, " + app.text)
+            app.fullMessage = ("Hi " + app.userName + ", on the day you were born, in the year " + app.yearOccur + ":  " + app.text)
             app.typeAnimation();
         })
     },
@@ -110,8 +112,12 @@ var api = {
             url: "https://cors-anywhere.herokuapp.com/" + "http://numbersapi.com/" + app.userDobYear + "/year?fragment&json",
             method: "GET"
         }).done(function (response) {
+            app.textThree = "";
+            if (response){
             var obj = response;
-            app.textThree = obj.text;
+                app.textThree = obj.text;
+            }
+            else (console.log("No Numbers Response"));
         })
     }
 }; //end API object
@@ -135,7 +141,7 @@ var app = {
     //animates page with info from first API, then checks for additional APIs
     typeAnimation: function () {
         if (app.letterCount === app.fullMessage.length) {
-            if (app.textTwo != "" && app.textTwoAdded === false){ //if we have received a response from Words API
+            if (app.textTwoAdded === false){ //if we have received a response from Words API
                 app.addSecondText(); //add its text to our results using this function
             };
         }
@@ -154,13 +160,13 @@ var app = {
     addSecondText: function (){
         app.letterCount = 0;
         clearTimeout(app.typeAnimationTimeout);
-        if (app.textTwo != ""){
+        if (app.textTwo !== ""){
             console.log("business as usual")
             app.fullMessage = " Your name is most commonly associated with:  " + app.textTwo + ".";
         }
         else {
             console.log("no second message")
-            app.fullMessage = " In the year you were born, " + app.textThree + ".";
+            app.fullMessage = " And in the year you were born, " + app.textThree + ".";
         };
         app.textTwoAdded = true; //prevents an endless loop from the logic above in typeAnimation()
         app.typeAnimation(); //appends to date in history
