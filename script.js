@@ -67,7 +67,8 @@ var api = {
             beforeSend: function (xhr) { xhr.setRequestHeader('X-Mashape-Key', 'KTvKMGaySOmsh75NGO7T8aR3MBbwp1rfNdIjsnwdXomPepANNE') }
         }).done(function (response) {
             var nameObj = response;
-            var definition = nameObj.results[0]["definition"];
+            console.log(nameObj.results);
+            var definition = (nameObj.results[0]["definition"] || "");
             app.textTwo = definition;
             // var p = $("<p>")
             // p.text("Your name means " + definition)
@@ -103,6 +104,15 @@ var api = {
             app.fullMessage = ("Hi " + app.userName + ", In the year " + app.yearOccur + " on the day you were born, " + app.text)
             app.typeAnimation();
         })
+    },
+    callNumbers: function() {
+        $.ajax({
+            url: "https://cors-anywhere.herokuapp.com/" + "http://numbersapi.com/" + app.userDobYear + "/year?fragment&json",
+            method: "GET"
+        }).done(function (response) {
+            var obj = response;
+            app.textThree = obj.text;
+        })
     }
 }; //end API object
 /***** app object stores application functions and variables *******/
@@ -116,6 +126,7 @@ var app = {
     userDobYear: "", //parsed year from Dob
     text: "", //text from initial API call
     textTwo: "", //text from second API call
+    textThree: "", //text from third API call
     textTwoAdded: false, //indicates that the text from second API call was added to the results container
     fullMessage: "", //this variable is currently just used in typeAnimation(); takes the text from an API call with some additioanl explanation and prints it to the UI
     typeAnimationTimeout: "", //timeout for our typeAnimationTimeoutFunction
@@ -143,7 +154,14 @@ var app = {
     addSecondText: function (){
         app.letterCount = 0;
         clearTimeout(app.typeAnimationTimeout);
-        app.fullMessage = " Your name is most commonly associated with:  " + app.textTwo + ".";
+        if (app.textTwo != ""){
+            console.log("business as usual")
+            app.fullMessage = " Your name is most commonly associated with:  " + app.textTwo + ".";
+        }
+        else {
+            console.log("no second message")
+            app.fullMessage = " In the year you were born, " + app.textThree + ".";
+        };
         app.textTwoAdded = true; //prevents an endless loop from the logic above in typeAnimation()
         app.typeAnimation(); //appends to date in history
     },
@@ -160,6 +178,7 @@ var app = {
         p.attr("name", snapshot.val().name);
         p.attr("day", snapshot.val().dobDay);
         p.attr("month", snapshot.val().dobMonth);
+        p.attr("year", snapshot.val().dobYear);
         div.append(p, span);
         $("#button-container").append(div);
     },
@@ -182,6 +201,7 @@ var app = {
 
         api.callHistory();
         api.callNameAPI();
+        api.callNumbers();
     },
 
     //if a user clicks on a pre-existing name/dob button, return info
@@ -190,8 +210,10 @@ var app = {
         app.userName = $(that).attr("name");
         app.userDobDay = $(that).attr("day");
         app.userDobMonth = $(that).attr("month");
+        app.userDobYear = $(that).attr("year");
         api.callHistory();
         api.callNameAPI();
+        api.callNumbers();
     }
 }; //end app object
 
@@ -223,3 +245,4 @@ document.onkeydown = function () {
         app.addNewName();
     }; 
 };//adds new name/dob button and returns info about this input
+
