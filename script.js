@@ -60,6 +60,8 @@ ui.start('#firebaseui-auth-container', {
 /***** object for our API calls *******/
 var api = {
     callNameAPI: function () {
+        app.textTwoAdded = false;
+        app.textTwo = "";
         $.ajax({
             url: "https://wordsapiv1.p.mashape.com/words/" + app.userName,
             data: { "X-Mashape-Key": "KTvKMGaySOmsh75NGO7T8aR3MBbwp1rfNdIjsnwdXomPepANNE" },
@@ -67,7 +69,6 @@ var api = {
             beforeSend: function (xhr) { xhr.setRequestHeader('X-Mashape-Key', 'KTvKMGaySOmsh75NGO7T8aR3MBbwp1rfNdIjsnwdXomPepANNE') }
         }).done(function (response) {
             var nameObj = response;
-            app.textTwo = "";
             if (nameObj.results){
                 var definition = nameObj.results[0]["definition"];
                 app.textTwo = definition;
@@ -108,11 +109,11 @@ var api = {
         })
     },
     callNumbers: function() {
+        app.textThree = "";
         $.ajax({
             url: "https://cors-anywhere.herokuapp.com/" + "http://numbersapi.com/" + app.userDobYear + "/year?fragment&json",
             method: "GET"
         }).done(function (response) {
-            app.textThree = "";
             if (response){
             var obj = response;
                 app.textThree = obj.text;
