@@ -57,6 +57,7 @@ initApp = function () {
             var photoURL = user.photoURL;
             var uid = user.uid;
             app.uid = uid;
+            userStorage = firebase.database().ref("user-storage/" + uid);
             console.log(app.uid);
             var phoneNumber = user.phoneNumber;
             var providerData = user.providerData;
