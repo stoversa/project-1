@@ -1,6 +1,7 @@
 /********** Firebase initialization: If forking, add your credentials to config const in config.js    ***********/
 firebase.initializeApp(config);
 var userStorage = firebase.database().ref("user-storage")
+var userDB;
 
 
 
@@ -51,6 +52,8 @@ ui.start('#firebaseui-auth-container', {
             var emailVerified = user.emailVerified;
             var photoURL = user.photoURL;
             var uid = user.uid;
+            userStorage.push({uid});
+            userDB = firebase.database().ref("user-storage/" + uid)
             var phoneNumber = user.phoneNumber;
             var providerData = user.providerData;
             user.getIdToken().then(function(accessToken) {
@@ -69,15 +72,13 @@ ui.start('#firebaseui-auth-container', {
             });
           } else {
             // User is signed out.
-            document.getElementById('sign-in-status').textContent = 'Signed out';
-            document.getElementById('sign-in').textContent = 'Sign in';
-            document.getElementById('account-details').textContent = 'null';
+            console.log('hi!')
           }
         }, function(error) {
           console.log(error);
         });
       };
-
+      
       window.addEventListener('load', function() {
         initApp()
 });
@@ -151,6 +152,7 @@ var api = {
 var app = { 
 
     //variables
+    uid: "",
     userName: "",
     userDob: "", //user's full date of birth, taken from UI
     userDobDay: "", //parsed day from Dob
@@ -278,3 +280,4 @@ document.onkeydown = function () {
     }; 
 };//adds new name/dob button and returns info about this input
 
+console.log("User's ID: " + app.uid);
