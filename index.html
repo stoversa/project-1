@@ -9,6 +9,7 @@
     <title>Hello, world</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <style>
+
         * {
             font-family: arial;
         }
@@ -55,35 +56,9 @@
     <script src="config.js"></script>
     <script src="script.js"></script>
 
-    <script type="text/javascript">
-        // FirebaseUI config.
-        var uiConfig = {
-            signInOptions: [
-                {
-                    provider: firebase.auth.GoogleAuthProvider.PROVIDER_ID,
-                    scopes: [
-                        'https://www.googleapis.com/auth/plus.login'
-                    ],
-                    customParameters: {
-                        // Forces account selection even when one account
-                        // is available.
-                        prompt: 'select_account'
-                    }
-                },
-                // Leave the lines as is for the providers you want to offer your users.
-                firebase.auth.GithubAuthProvider.PROVIDER_ID
-            ],
-            // Terms of service url.
-            tosUrl: '<your-tos-url>'
-        };
-
-        // Initialize the FirebaseUI Widget using Firebase.
-        var ui = new firebaseui.auth.AuthUI(firebase.auth());
-        // The start method will wait until the DOM is loaded.
-        ui.start('#firebaseui-auth-container', uiConfig);
-    </script>
-    <div id="firebaseui-auth-container"></div>
-
+<h1>Welcome to My Awesome App</h1>
+<div id="firebaseui-auth-container"></div>
+<div id="loader">Loading...</div>
 </body>
 
 </html>

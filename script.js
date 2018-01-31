@@ -3,12 +3,37 @@ firebase.initializeApp(config);
 var userStorage = firebase.database().ref("user-storage")
 
 
-/*
+
 // The following code is for firebase authentication/login
 var provider = new firebase.auth.GithubAuthProvider();
-/*
+  var uiConfig = {
+      signInOptions: [{
+              provider: firebase.auth.GoogleAuthProvider.PROVIDER_ID,
+              scopes: [
+                  'https://www.googleapis.com/auth/plus.login'
+              ],
+              customParameters: {
+                  // Forces account selection even when one account
+                  // is available.
+                  prompt: 'select_account'
+              }
+          },
+          // Leave the lines as is for the providers you want to offer your users.
+          firebase.auth.GithubAuthProvider.PROVIDER_ID
+      ],
+      // Terms of service url.
+      tosUrl: '<your-tos-url>'
+  };
+
+  // Initialize the FirebaseUI Widget using Firebase.
+
+
+  var ui = new firebaseui.auth.AuthUI(firebase.auth());
+  // The start method will wait until the DOM is loaded.
+  ui.start('#firebaseui-auth-container', uiConfig);
+
 ui.start('#firebaseui-auth-container', {
-    signInOptions =[
+    signInOptions: [
         // List of OAuth providers supported.
         firebase.auth.GoogleAuthProvider.PROVIDER_ID,
         firebase.auth.GithubAuthProvider.PROVIDER_ID
@@ -56,7 +81,7 @@ ui.start('#firebaseui-auth-container', {
       window.addEventListener('load', function() {
         initApp()
 });
-*/
+
 /***** object for our API calls *******/
 var api = {
     callNameAPI: function () {
