@@ -1,7 +1,6 @@
 /********** Firebase initialization: If forking, add your credentials to config const in config.js    ***********/
 firebase.initializeApp(config);
-var userStorage = firebase.database().ref("user-storage")
-var userDB;
+var userStorage = firebase.database().ref("user-storage");
 
 
 
@@ -282,3 +281,8 @@ document.onkeydown = function () {
 };//adds new name/dob button and returns info about this input
 
 console.log("User's ID: " + app.uid);
+firebase.auth().onAuthStateChanged((user) => {
+    if (user) {
+        console.log(user.uid);
+    }
+});
