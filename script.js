@@ -59,7 +59,7 @@ initApp = function () {
             app.uid = uid;
             userStorage = firebase.database().ref("user-storage/" + app.uid);
             console.log(app.uid);
-            buttonListener();
+            app.buttonListener();
             var phoneNumber = user.phoneNumber;
             var providerData = user.providerData;
             user.getIdToken().then(function (accessToken) {
