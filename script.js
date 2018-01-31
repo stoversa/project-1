@@ -56,7 +56,8 @@ initApp = function () {
             var emailVerified = user.emailVerified;
             var photoURL = user.photoURL;
             var uid = user.uid;
-            console.log(uid);
+            app.uid = uid;
+            console.log(app.uid);
             var phoneNumber = user.phoneNumber;
             var providerData = user.providerData;
             user.getIdToken().then(function (accessToken) {
@@ -102,10 +103,6 @@ firebase.auth().setPersistence(firebase.auth.Auth.Persistence.SESSION)
         var errorMessage = error.message;
     });
 
-var app = {
-    isRunning: false,
-    fullMessage: ""
-};
 //Place for our API calls
 /***** object for our API calls *******/
 var api = {
@@ -176,6 +173,7 @@ var api = {
 var app = {
 
     //variables
+    uid: "",
     userName: "",
     userDob: "", //user's full date of birth, taken from UI
     userDobDay: "", //parsed day from Dob
