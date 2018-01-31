@@ -1,6 +1,6 @@
 /********** Firebase initialization: If forking, add your credentials to config const in config.js    ***********/
 firebase.initializeApp(config);
-var userStorage = firebase.database().ref("user-storage")
+var userStorage = firebase.database().ref("user-storage/notloggedin")
 
 
 // The following code is for firebase authentication/login
@@ -284,9 +284,6 @@ var app = {
 }; //end app object
 
 /************* Event listeners    *************/
-
-
-
 
 // on-click event function for when a user clcks on a pre-existing serach's button
 $(document).delegate(".user-button", "click", function () {
