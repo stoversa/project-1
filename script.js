@@ -52,8 +52,8 @@ ui.start('#firebaseui-auth-container', {
             var emailVerified = user.emailVerified;
             var photoURL = user.photoURL;
             var uid = user.uid;
-            userStorage.push({uid});
-            userDB = firebase.database().ref("user-storage/" + uid)
+              firebase.database().ref().push({ uid});
+              firebase.database().ref().push(uid)
             var phoneNumber = user.phoneNumber;
             var providerData = user.providerData;
             user.getIdToken().then(function(accessToken) {
