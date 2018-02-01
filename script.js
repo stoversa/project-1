@@ -19,6 +19,7 @@ var uiConfig = {
             // The widget is rendered.
             // Hide the loader.
             document.getElementById('loader').style.display = 'none';
+            $('.login-box').hide();
         }
     },
     signInSuccessUrl: 'index.html',
@@ -63,8 +64,6 @@ initApp = function () {
             var phoneNumber = user.phoneNumber;
             var providerData = user.providerData;
             user.getIdToken().then(function (accessToken) {
-                document.getElementById('sign-in-status').textContent = 'Signed in';
-                document.getElementById('sign-in').textContent = 'Sign out';
                 document.getElementById('account-details').textContent = JSON.stringify({
                     displayName: displayName,
                     email: email,
@@ -78,9 +77,6 @@ initApp = function () {
             });
         } else {
             // User is signed out.
-            document.getElementById('sign-in-status').textContent = 'Signed out';
-            document.getElementById('sign-in').textContent = 'Sign in';
-            document.getElementById('account-details').textContent = 'null';
         }
     }, function (error) {
         console.log(error);
@@ -272,7 +268,7 @@ var app = {
         api.callNameAPI();
         api.callNumbers();
     },
-    buttonListener: function (){
+    buttonListener: function () {
         userStorage.on("child_added", function (snapshot) {
             app.populateButtons(snapshot)
         }, //pushes firebase info to the populate buttons function
@@ -295,9 +291,16 @@ $(document).delegate(".user-button", "click", function () {
 $(document).delegate(".remove", "click", function () {
     var thisButton = $(this).parent();//grabs the parent of the remove button, so that we can delete from DOM
     var key = $(this).attr("key");//grabs key of the object we'll be deleting
-    firebase.database().ref("user-storage/" + key).remove();//deletes the object in Firebase
+    firebase.database().ref("user-storage/" + app.uid + "/" + key).remove();//deletes the object in Firebase
     thisButton.remove();//removes containing button from DOM
 });
+
+$(document).delegate(".hide", "click", function () {
+    var thisSection = $(this).parent();
+    thisSection.slideUp("fast", function () {
+        thisSection.hide();
+    });
+})
 
 // function when a user inputs name/dob 
 document.onkeydown = function () {
@@ -305,3 +308,18 @@ document.onkeydown = function () {
         app.addNewName();
     };
 };//adds new name/dob button and returns info about this input
+
+$("#search").click(function () {
+    event.preventDefault();
+    var that = $(this);
+    app.clickButton(that);
+});
+
+$("#logout").click(function () {
+    firebase.auth().signOut().then(function () {
+        location.reload();
+        // Sign-out successful.
+    }).catch(function (error) {
+        // An error happened.
+    });
+});
