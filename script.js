@@ -239,6 +239,7 @@ var app = {
     //the following two functions deal with either inputting data to view content on the page, or viewing content for pre-existing users
     addNewName: function () {
         $("#results-container").empty();
+        $(".instructions").hide();
         app.userName = $("#name-input").val().trim();
         app.userDob = $("#date").val();
         app.userDobDay = app.userDob.substring(app.userDob.length - 2);
