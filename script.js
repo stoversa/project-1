@@ -19,7 +19,6 @@ var uiConfig = {
             // The widget is rendered.
             // Hide the loader.
             document.getElementById('loader').style.display = 'none';
-            $('.login-box').hide();
         }
     },
     signInSuccessUrl: 'index.html',
@@ -52,6 +51,7 @@ initApp = function () {
         if (user) {
             // User is signed in.
             $("#firebaseui-auth-container").css("display", "none");
+            $(".login-box").hide();
             var displayName = user.displayName;
             var email = user.email;
             var emailVerified = user.emailVerified;
